@@ -122,6 +122,13 @@ export default function Index() {
   // SVG进度
   const [strokeDashoffset, setStrokeDashoffset] = useState(MaxStrokeDashoffset);
 
+  const [mount, setMount] = useState(false);
+
+  useEffect(() => {
+    setMount(true);
+    return () => setMount(false);
+  }, []);
+
   /**
    * 开启Tween
    */
@@ -386,94 +393,96 @@ export default function Index() {
           </div>
 
           {/* 开始工作 */}
-          {createPortal(
-            <div
-              className={classNames(
-                'fixed bottom-0 left-0 right-0 top-0 z-[100] h-[100vh] w-[100vw] flex-col items-center justify-center transition-all duration-300',
-                {
-                  'bg-white': isWorking,
-                  'bg-green-500': isResting || isSuccess,
-                  flex: !!(isWorking || isResting || isSuccess),
-                  hidden: !(isWorking || isResting || isSuccess),
-                },
-              )}
-              ref={workContainer}
-            >
-              <IconService
-                className={classNames(
-                  'icon-music absolute left-8 top-5 cursor-pointer text-4xl text-white',
-                  {
-                    'opacity-60': !isPlayingAudio,
-                  },
-                )}
-                onClick={onToggleAudioPlay}
-              />
-              <div className="group relative flex h-[250px] w-[250px] items-center justify-center rounded-full">
-                <svg
-                  width="250"
-                  height="250"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="-rotate-90"
-                >
-                  <circle
-                    r="115"
-                    cy="125"
-                    cx="125"
-                    strokeWidth="20"
-                    stroke={isWorking ? 'rgba(246, 95, 84, 0.2)' : 'rgba(255, 255, 255, 0.2)'}
-                    fill="none"
-                  ></circle>
-                  <circle
-                    r="115"
-                    cy="125"
-                    cx="125"
-                    stroke={isWorking ? '#f65f54' : '#fff'}
-                    strokeWidth="20"
-                    strokeLinecap="round"
-                    strokeDasharray={`${MaxStrokeDashoffset}`}
-                    strokeDashoffset={`${strokeDashoffset}`}
-                    fill="none"
-                  ></circle>
-                </svg>
+          {mount
+            ? createPortal(
                 <div
-                  className="absolute bottom-0 left-0 right-0 top-0 flex cursor-pointer items-center justify-center"
-                  onClick={onCancel}
+                  className={classNames(
+                    'fixed bottom-0 left-0 right-0 top-0 z-[100] h-[100vh] w-[100vw] flex-col items-center justify-center transition-all duration-300',
+                    {
+                      'bg-white': isWorking,
+                      'bg-green-500': isResting || isSuccess,
+                      flex: !!(isWorking || isResting || isSuccess),
+                      hidden: !(isWorking || isResting || isSuccess),
+                    },
+                  )}
+                  ref={workContainer}
                 >
-                  <div
-                    className={classNames('hidden text-center text-4xl group-hover:block', {
-                      ['text-[#f65f54]']: isWorking,
-                      ['text-white']: isResting || isSuccess,
-                    })}
-                  >
-                    取消
+                  <IconService
+                    className={classNames(
+                      'icon-music absolute left-8 top-5 cursor-pointer text-4xl text-white',
+                      {
+                        'opacity-60': !isPlayingAudio,
+                      },
+                    )}
+                    onClick={onToggleAudioPlay}
+                  />
+                  <div className="group relative flex h-[250px] w-[250px] items-center justify-center rounded-full">
+                    <svg
+                      width="250"
+                      height="250"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="-rotate-90"
+                    >
+                      <circle
+                        r="115"
+                        cy="125"
+                        cx="125"
+                        strokeWidth="20"
+                        stroke={isWorking ? 'rgba(246, 95, 84, 0.2)' : 'rgba(255, 255, 255, 0.2)'}
+                        fill="none"
+                      ></circle>
+                      <circle
+                        r="115"
+                        cy="125"
+                        cx="125"
+                        stroke={isWorking ? '#f65f54' : '#fff'}
+                        strokeWidth="20"
+                        strokeLinecap="round"
+                        strokeDasharray={`${MaxStrokeDashoffset}`}
+                        strokeDashoffset={`${strokeDashoffset}`}
+                        fill="none"
+                      ></circle>
+                    </svg>
+                    <div
+                      className="absolute bottom-0 left-0 right-0 top-0 flex cursor-pointer items-center justify-center"
+                      onClick={onCancel}
+                    >
+                      <div
+                        className={classNames('hidden text-center text-4xl group-hover:block', {
+                          ['text-[#f65f54]']: isWorking,
+                          ['text-white']: isResting || isSuccess,
+                        })}
+                      >
+                        取消
+                      </div>
+                      <div
+                        className={classNames('block text-center group-hover:hidden', {
+                          'text-[#f65f54]': isWorking,
+                          'text-white': isResting || isSuccess,
+                          'text-5xl': isResting || isWorking,
+                          'text-4xl': isSuccess,
+                        })}
+                      >
+                        {isResting || isWorking ? countDownRemain : '成功'}
+                      </div>
+                    </div>
                   </div>
-                  <div
-                    className={classNames('block text-center group-hover:hidden', {
-                      'text-[#f65f54]': isWorking,
-                      'text-white': isResting || isSuccess,
-                      'text-5xl': isResting || isWorking,
-                      'text-4xl': isSuccess,
-                    })}
-                  >
-                    {isResting || isWorking ? countDownRemain : '成功'}
-                  </div>
-                </div>
-              </div>
 
-              {isSuccess && (
-                <Button
-                  className="absolute translate-y-[50px] !border-white !text-white hover:!bg-white/20"
-                  size="large"
-                  type="secondary"
-                  ghost
-                  onClick={() => onStartWork()}
-                >
-                  下一个
-                </Button>
-              )}
-            </div>,
-            document.body,
-          )}
+                  {isSuccess && (
+                    <Button
+                      className="absolute translate-y-[50px] !border-white !text-white hover:!bg-white/20"
+                      size="large"
+                      type="secondary"
+                      ghost
+                      onClick={() => onStartWork()}
+                    >
+                      下一个
+                    </Button>
+                  )}
+                </div>,
+                document.body,
+              )
+            : null}
 
           {/* 规则说明 */}
           <div
