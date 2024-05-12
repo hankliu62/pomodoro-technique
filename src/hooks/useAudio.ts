@@ -1,4 +1,5 @@
-import { MutableRefObject, useEffect, useRef } from 'react';
+import type { MutableRefObject} from 'react';
+import { useEffect, useRef } from 'react';
 
 export default function useAudio(url: string): MutableRefObject<HTMLAudioElement> {
   const audioRef = useRef<HTMLAudioElement>();

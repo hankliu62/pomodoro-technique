@@ -1,6 +1,7 @@
 import AOS from 'aos';
 import BTween from 'b-tween';
-import React, { useCallback, useEffect, useMemo, useRef, useState, ReactPortal } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { SelectProps } from '@hankliu/hankliu-ui';
 import {
   Card,
   Tooltip,
@@ -8,7 +9,6 @@ import {
   Button,
   InputNumber,
   Select,
-  SelectProps,
   Checkbox,
   Badge,
 } from '@hankliu/hankliu-ui';
@@ -178,6 +178,7 @@ export default function Index() {
           clearInterval(workTimer.current);
           setIsWorking(false);
           if (isAutoRest) {
+            // eslint-disable-next-line @typescript-eslint/no-use-before-define
             onStartRest();
           } else {
             setIsSuccess(true);
